@@ -35,6 +35,10 @@
         if (error) {
             if (failed) failed(error, finished);
         } else {
+            SDImageFormat imgFType= [NSData sd_imageFormatForImageData:data];
+            if (imgFType == SDImageFormatUndefined || imgFType == SDImageFormatWebP) {//处理webP图片不能显示的情况
+                data = UIImageJPEGRepresentation(image, 1);
+            }
             if (success) success(data, finished);
         }
     }];
