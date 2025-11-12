@@ -149,7 +149,39 @@
 #pragma mark - public
 
 - (void)show {
-    [self showToView:[UIApplication sharedApplication].keyWindow];
+    UIWindow *targetWindow = nil;
+    NSEnumerator *reverseWindows = [[[UIApplication sharedApplication] windows] reverseObjectEnumerator];
+    for (UIWindow *window in reverseWindows) {
+        if (window.windowLevel == UIWindowLevelNormal || window.windowLevel == UIWindowLevelStatusBar || window.windowLevel == UIWindowLevelAlert) {
+            if (!window.isHidden && window.alpha > 0) {
+                targetWindow = window;
+                break;
+            }
+        }
+    }
+    
+    // 如果没找到合适的窗口，尝试使用keyWindow
+    if (!targetWindow) {
+        targetWindow = [[UIApplication sharedApplication] keyWindow];
+    }
+    
+    // 如果还是没有找到，使用第一个可见的窗口
+    if (!targetWindow) {
+        NSArray *windows = [[UIApplication sharedApplication] windows];
+        for (UIWindow *window in windows) {
+            if (!window.isHidden && window.alpha > 0) {
+                targetWindow = window;
+                break;
+            }
+        }
+    }
+    
+    if (targetWindow) {
+        [self showToView:[UIApplication sharedApplication].keyWindow];
+    } else {
+        // 如果所有窗口查找都失败，记录错误日志
+        // @"❌ JCPopView: 无法找到合适的窗口来显示弹窗"
+    }
 }
 
 - (void)showToView:(UIView *)view {
