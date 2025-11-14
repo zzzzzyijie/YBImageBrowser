@@ -177,7 +177,7 @@
     }
     
     if (targetWindow) {
-        [self showToView:[UIApplication sharedApplication].keyWindow];
+        [self showToView: targetWindow];
     } else {
         // 如果所有窗口查找都失败，记录错误日志
         // @"❌ JCPopView: 无法找到合适的窗口来显示弹窗"
